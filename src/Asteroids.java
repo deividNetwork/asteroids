@@ -120,6 +120,7 @@ public class Asteroids extends Applet implements Runnable, KeyListener {
             g2d.drawString("Face angle: " + Math.round(
                     ship.getFaceAngle()), 5, 45);
             g2d.drawString("HP: " + ship.getHP(), 5, 60);
+            g2d.drawString("Score: " + ship.getScore(), 5, 75);
 
             //desenha o gráfico do jogo
             drawShip();
@@ -407,6 +408,7 @@ public class Asteroids extends Applet implements Runnable, KeyListener {
                                 bullet[n].getX(), bullet[n].getY())) {
                             bullet[n].setAlive(false);
                             ast[m].setAlive(false);
+                            ship.setScore(ship.getScore() + Ship.ATTACK_DAMAGE);
                             continue;
                         }
                     }
@@ -551,6 +553,7 @@ public class Asteroids extends Applet implements Runnable, KeyListener {
     public void restartGame() {
         themeSound.loop();
 
+        ship.setScore(Ship.INITIAL_SCORE);
         ship.setHP(Ship.INITIAL_HP);
         ship.setAlive(true);
     }

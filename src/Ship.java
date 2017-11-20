@@ -14,9 +14,15 @@ public class Ship extends BaseVectorShape {
 
     private int HP;
 
+    private int score;
+
+    public static final int INITIAL_SCORE = 0;
+
     public static final int INITIAL_HP = 100;
 
     public static final int COLISSION_DAMAGE = 25;
+
+    public static final int ATTACK_DAMAGE = 80;
 
     //retângulo delimitador
     public Rectangle getBounds() {
@@ -29,6 +35,7 @@ public class Ship extends BaseVectorShape {
     Ship() {
         setShape(new Polygon(shipx, shipy, shipx.length));
         setAlive(true);
+        setScore(Ship.INITIAL_SCORE);
         setHP(Ship.INITIAL_HP);
     }
 
@@ -48,5 +55,23 @@ public class Ship extends BaseVectorShape {
      */
     public int getHP() {
         return this.HP;
+    }
+
+    /**
+     * Set score of the Ship
+     *
+     * @param score
+     */
+    public void setScore(int score) {
+        this.score = score;
+    }
+
+    /**
+     * Retrieve score of the Ship
+     *
+     * @return
+     */
+    public int getScore() {
+        return this.score;
     }
 }
