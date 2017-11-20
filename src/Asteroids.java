@@ -35,11 +35,11 @@ public class Asteroids extends Applet implements Runnable, KeyListener {
     boolean showBounds = false;
 
     //cria o veltor de asteróides 
-    int ASTEROIDS = 1;
+    int ASTEROIDS = 20;
     Asteroid[] ast = new Asteroid[ASTEROIDS];
 
     //cria o vetor de balas 
-    int BULLETS = 10;
+    int BULLETS = 100;
     Bullet[] bullet = new Bullet[BULLETS];
     int currentBullet = 0;
 
@@ -421,6 +421,12 @@ public class Asteroids extends Applet implements Runnable, KeyListener {
             case KeyEvent.VK_UP:
                 //a seta para cima impulsiona a nave (1/10 da velocidade normal)
                 ship.setMoveAngle(ship.getFaceAngle() - 90);
+                ship.incVelX(calcAngleMoveX(ship.getMoveAngle()) * 0.1);
+                ship.incVelY(calcAngleMoveY(ship.getMoveAngle()) * 0.1);
+                break;
+            case KeyEvent.VK_DOWN:
+                //a seta para cima impulsiona a nave (1/10 da velocidade normal)
+                ship.setMoveAngle(ship.getFaceAngle() + 90);
                 ship.incVelX(calcAngleMoveX(ship.getMoveAngle()) * 0.1);
                 ship.incVelY(calcAngleMoveY(ship.getMoveAngle()) * 0.1);
                 break;
