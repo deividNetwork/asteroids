@@ -14,6 +14,8 @@ public class Ship extends BaseVectorShape {
 
     private int HP;
 
+    public static final int INITIAL_HP = 100;
+
     public static final int COLISSION_DAMAGE = 25;
 
     //retângulo delimitador
@@ -27,7 +29,7 @@ public class Ship extends BaseVectorShape {
     Ship() {
         setShape(new Polygon(shipx, shipy, shipx.length));
         setAlive(true);
-        setHP(100);
+        setHP(Ship.INITIAL_HP);
     }
 
     /**

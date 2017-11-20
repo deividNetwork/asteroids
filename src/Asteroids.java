@@ -114,6 +114,7 @@ public class Asteroids extends Applet implements Runnable, KeyListener {
             drawShip();
             drawBullets();
             drawAsteroids();
+            drawGameOver();
 
             //redesenha a janela do applet
             paint(g);
@@ -129,7 +130,13 @@ public class Asteroids extends Applet implements Runnable, KeyListener {
         g2d.setTransform(identity);
         g2d.translate(ship.getX(), ship.getY());
         g2d.rotate(Math.toRadians(ship.getFaceAngle()));
-        g2d.setColor(Color.WHITE);
+
+        if (!ship.isAlive()) {
+            g2d.setColor(new Color(255, 255, 255, 0));
+        } else {
+            g2d.setColor(Color.WHITE);
+        }
+
         g2d.fill(ship.getShape());
     }
 
@@ -172,6 +179,26 @@ public class Asteroids extends Applet implements Runnable, KeyListener {
                 g2d.fill(ast[n].getShape());
 
             }
+        }
+    }
+
+    /**
+     * draw Game Over on the screen
+     */
+    public void drawGameOver() {
+        if (!ship.isAlive()) {
+            g2d.setTransform(identity);
+
+            int appletWidth = (int) this.getSize().getWidth();
+            int appletHeight = (int) this.getSize().getHeight();
+
+            g2d.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 46));
+            g2d.setColor(Color.RED);
+            g2d.drawString("GAME OVER! ", appletWidth / 2 - 130, appletHeight / 2 - 0);
+
+            g2d.setFont(new Font(Font.MONOSPACED, Font.ITALIC, 18));
+            g2d.setColor(Color.RED);
+            g2d.drawString("Press Enter to Restart", appletWidth / 2 - 115, appletHeight / 2 + 30);
         }
     }
 
@@ -346,6 +373,9 @@ public class Asteroids extends Applet implements Runnable, KeyListener {
      * Verifica se os asteróides estão colidindo com as balas ou com a nave
      */
     public void checkCollisions() {
+        if (!ship.isAlive()) {
+            return;
+        }
 
         //percorrer o vetor de asteróides
         for (int m = 0; m < ASTEROIDS; m++) {
@@ -407,6 +437,10 @@ public class Asteroids extends Applet implements Runnable, KeyListener {
         int keyCode = k.getKeyCode();
 
         if (!ship.isAlive()) {
+            if (keyCode == KeyEvent.VK_ENTER) {
+                this.restartGame();
+            }
+
             return;
         }
 
@@ -490,5 +524,10 @@ public class Asteroids extends Applet implements Runnable, KeyListener {
      */
     public double calcAngleMoveY(double angle) {
         return (double) (Math.sin(angle * Math.PI / 180));
+    }
+
+    public void restartGame() {
+        ship.setHP(Ship.INITIAL_HP);
+        ship.setAlive(true);
     }
 }
