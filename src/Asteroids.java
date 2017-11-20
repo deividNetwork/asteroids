@@ -38,6 +38,9 @@ public class Asteroids extends Applet implements Runnable, KeyListener {
     int ASTEROIDS = 20;
     Asteroid[] ast = new Asteroid[ASTEROIDS];
 
+    // Death count
+    int DEAD_QTY = 0;
+
     //cria o vetor de balas 
     int BULLETS = 100;
     Bullet[] bullet = new Bullet[BULLETS];
@@ -277,6 +280,7 @@ public class Asteroids extends Applet implements Runnable, KeyListener {
         updateBullets();
         updateAsteroids();
         checkCollisions();
+        resetRound();
     }
 
     /**
@@ -382,6 +386,22 @@ public class Asteroids extends Applet implements Runnable, KeyListener {
     }
 
     /**
+     * Reset asteroids after killing all
+     */
+    public void resetRound() {
+        if (DEAD_QTY >= ASTEROIDS) {
+            DEAD_QTY = 0;
+
+            //Bonus in score
+            ship.setScore(ship.getScore() + Ship.SPECIAL_ATTACK_DAMAGE);
+
+            for (int n = 0; n < ASTEROIDS; n++) {
+                ast[n].setAlive(true);
+            }
+        }
+    }
+
+    /**
      * Verifica se os asteróides estão colidindo com as balas ou com a nave
      */
     public void checkCollisions() {
@@ -409,6 +429,9 @@ public class Asteroids extends Applet implements Runnable, KeyListener {
                             bullet[n].setAlive(false);
                             ast[m].setAlive(false);
                             ship.setScore(ship.getScore() + Ship.ATTACK_DAMAGE);
+
+                            DEAD_QTY++;
+
                             continue;
                         }
                     }
@@ -436,6 +459,8 @@ public class Asteroids extends Applet implements Runnable, KeyListener {
                     } else {
                         collisionSound = new SoundClip(SoundClip.COLLISION_SONG);
                         collisionSound.play();
+
+                        DEAD_QTY++;
                     }
                     //continue;
                 }

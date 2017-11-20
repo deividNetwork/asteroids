@@ -24,6 +24,8 @@ public class Ship extends BaseVectorShape {
 
     public static final int ATTACK_DAMAGE = 80;
 
+    public static final int SPECIAL_ATTACK_DAMAGE = 500;
+
     //retângulo delimitador
     public Rectangle getBounds() {
         Rectangle r;
