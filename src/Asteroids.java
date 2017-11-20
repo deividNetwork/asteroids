@@ -502,17 +502,17 @@ public class Asteroids extends Applet implements Runnable, KeyListener {
 
             case KeyEvent.VK_LEFT:
                 //a seta esquerda rotaciona a nave em 5 graus à esquerda 
-                ship.incFaceAngle(-5);
+                ship.incFaceAngle(-15);
                 if (ship.getFaceAngle() < 0) {
-                    ship.setFaceAngle(360 - 5);
+                    ship.setFaceAngle(360 - 15);
                 }
                 break;
 
             case KeyEvent.VK_RIGHT:
                 //a seta direita rotaciona a nave em 5 graus à esquerda 
-                ship.incFaceAngle(5);
+                ship.incFaceAngle(15);
                 if (ship.getFaceAngle() > 360) {
-                    ship.setFaceAngle(5);
+                    ship.setFaceAngle(15);
                 }
                 break;
 
