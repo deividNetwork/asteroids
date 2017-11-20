@@ -12,6 +12,10 @@ public class Ship extends BaseVectorShape {
     private int[] shipx = {-6, -3, 0, 3, 6, 0};
     private int[] shipy = {6, 7, 7, 7, 6, -7};
 
+    private int HP;
+
+    public static final int COLISSION_DAMAGE = 25;
+
     //retângulo delimitador
     public Rectangle getBounds() {
         Rectangle r;
@@ -23,5 +27,24 @@ public class Ship extends BaseVectorShape {
     Ship() {
         setShape(new Polygon(shipx, shipy, shipx.length));
         setAlive(true);
+        setHP(100);
+    }
+
+    /**
+     * Set HP of the Ship
+     *
+     * @param HP
+     */
+    public void setHP(int HP) {
+        this.HP = HP > 0 ? HP : 0;
+    }
+
+    /**
+     * Retrieve HP of the Ship
+     *
+     * @return
+     */
+    public int getHP() {
+        return this.HP;
     }
 }
