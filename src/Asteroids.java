@@ -11,12 +11,17 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.*;
 import java.awt.image.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 
 /**
  * *******************************************************
  * Classe principal do jogo que herda de da classe Applet
- ********************************************************
+ * *******************************************************
  */
 public class Asteroids extends Applet implements Runnable, KeyListener {
 
@@ -33,7 +38,7 @@ public class Asteroids extends Applet implements Runnable, KeyListener {
     boolean showBounds = false;
 
     //cria o veltor de asteróides 
-    int ASTEROIDS = 20;
+    int ASTEROIDS = 1;
     Asteroid[] ast = new Asteroid[ASTEROIDS];
 
     //cria o vetor de balas 
@@ -50,21 +55,20 @@ public class Asteroids extends Applet implements Runnable, KeyListener {
     //cria um gerador de números aleatórios
     Random rand = new Random();
 
+    File background;
+
     /**
      * ***************************************************
-     * evento init do applet 
-     ****************************************************
+     * evento init do applet ***************************************************
      */
     public void init() {
-        //cria um buffer de fundo para renderizar os desenhos de forma suave, sem trepidações
-        backbuffer = new BufferedImage(640, 480, BufferedImage.TYPE_INT_RGB);
-        g2d = backbuffer.createGraphics();
+        background = new File("src/image/background.jpg");
 
-        // posiciona a nave 
+        // posiciona a nave
         ship.setX(320);
         ship.setY(240);
 
-        //inicializa as balas 
+        //inicializa as balas
         for (int n = 0; n < BULLETS; n++) {
             bullet[n] = new Bullet();
         }
@@ -89,51 +93,55 @@ public class Asteroids extends Applet implements Runnable, KeyListener {
     /**
      * ***************************************************
      * evento de update do applet para redesenhar a tela
-     ****************************************************
+     * ***************************************************
      */
     public void update(Graphics g) {
-        //inicializa as trnasformadas na identidade
-        g2d.setTransform(identity);
+        try {
+            //cria um buffer de fundo para renderizar os desenhos de forma suave, sem trepidações
+            backbuffer = ImageIO.read(background);
+            g2d = backbuffer.createGraphics();
 
-        //apaga o background
-        g2d.setPaint(Color.BLACK);
-        g2d.fillRect(0, 0, getSize().width, getSize().height);
+            //inicializa as trnasformadas na identidade
+            g2d.setTransform(identity);
 
-        //imprime inforamção de status no canto superior da tela
-        g2d.setColor(Color.WHITE);
-        g2d.drawString("Ship: " + Math.round(ship.getX()) + ","
-                + Math.round(ship.getY()), 5, 10);
-        g2d.drawString("Move angle: " + Math.round(
-                ship.getMoveAngle()) + 90, 5, 25);
-        g2d.drawString("Face angle: " + Math.round(
-                ship.getFaceAngle()), 5, 40);
+            //imprime inforamção de status no canto superior da tela
+            g2d.setColor(Color.WHITE);
+            g2d.drawString("Ship: " + Math.round(ship.getX()) + ","
+                    + Math.round(ship.getY()), 5, 10);
+            g2d.drawString("Move angle: " + Math.round(
+                    ship.getMoveAngle()) + 90, 5, 25);
+            g2d.drawString("Face angle: " + Math.round(
+                    ship.getFaceAngle()), 5, 40);
 
-        //desenha o gráfico do jogo
-        drawShip();
-        drawBullets();
-        drawAsteroids();
+            //desenha o gráfico do jogo
+            drawShip();
+            drawBullets();
+            drawAsteroids();
 
-        //redesenha a janela do applet
-        paint(g);
+            //redesenha a janela do applet
+            paint(g);
+        } catch (IOException ex) {
+            Logger.getLogger(Asteroids.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**
      * ***************************************************
      * drawShip desenha a nave na tela
-     ****************************************************
+     * ***************************************************
      */
     public void drawShip() {
         g2d.setTransform(identity);
         g2d.translate(ship.getX(), ship.getY());
         g2d.rotate(Math.toRadians(ship.getFaceAngle()));
-        g2d.setColor(Color.ORANGE);
+        g2d.setColor(Color.WHITE);
         g2d.fill(ship.getShape());
     }
 
     /**
      * ***************************************************
      * drawBullets desenha as balas na tela
-     ****************************************************
+     * ***************************************************
      */
     public void drawBullets() {
 
@@ -146,7 +154,7 @@ public class Asteroids extends Applet implements Runnable, KeyListener {
                 //desenha a bala
                 g2d.setTransform(identity);
                 g2d.translate(bullet[n].getX(), bullet[n].getY());
-                g2d.setColor(Color.MAGENTA);
+                g2d.setColor(Color.WHITE);
                 g2d.draw(bullet[n].getShape());
             }
         }
@@ -154,8 +162,8 @@ public class Asteroids extends Applet implements Runnable, KeyListener {
 
     /**
      * ***************************************************
-     * drawAsteroids desenha os asteroids 
-     ****************************************************
+     * drawAsteroids desenha os asteroids
+     * ***************************************************
      */
     public void drawAsteroids() {
 
@@ -169,7 +177,7 @@ public class Asteroids extends Applet implements Runnable, KeyListener {
                 g2d.setTransform(identity);
                 g2d.translate(ast[n].getX(), ast[n].getY());
                 g2d.rotate(Math.toRadians(ast[n].getMoveAngle()));
-                g2d.setColor(Color.DARK_GRAY);
+                g2d.setColor(Color.WHITE);
                 g2d.fill(ast[n].getShape());
 
             }
@@ -179,7 +187,7 @@ public class Asteroids extends Applet implements Runnable, KeyListener {
     /**
      * **********************************************************
      * evento de repintar a janela -- desenhar o buffer de fundo
-     ***********************************************************
+     * **********************************************************
      */
     public void paint(Graphics g) {
 
@@ -191,7 +199,7 @@ public class Asteroids extends Applet implements Runnable, KeyListener {
     /**
      * ***************************************************
      * thread start event - start the game loop running
-     ****************************************************
+     * ***************************************************
      */
     public void start() {
 
@@ -203,7 +211,7 @@ public class Asteroids extends Applet implements Runnable, KeyListener {
     /**
      * ***************************************************
      * evento run da thread (game loop)
-     ****************************************************
+     * ***************************************************
      */
     public void run() {
 
@@ -228,8 +236,7 @@ public class Asteroids extends Applet implements Runnable, KeyListener {
 
     /**
      * ***************************************************
-     * evento stop da thread 
-     ****************************************************
+     * evento stop da thread ***************************************************
      */
     public void stop() {
 
@@ -240,7 +247,7 @@ public class Asteroids extends Applet implements Runnable, KeyListener {
     /**
      * ***************************************************
      * animação dos objetos no jogo
-     ****************************************************
+     * ***************************************************
      */
     private void gameUpdate() {
         updateShip();
@@ -252,7 +259,7 @@ public class Asteroids extends Applet implements Runnable, KeyListener {
     /**
      * ***************************************************
      * Atualiza a posição da nave baseado na velocidade
-     ****************************************************
+     * ***************************************************
      */
     public void updateShip() {
 
@@ -280,7 +287,7 @@ public class Asteroids extends Applet implements Runnable, KeyListener {
     /**
      * ***************************************************
      * Atualiza as balas baseado na velocidade
-     ****************************************************
+     * ***************************************************
      */
     public void updateBullets() {
 
@@ -314,7 +321,7 @@ public class Asteroids extends Applet implements Runnable, KeyListener {
     /**
      * ***************************************************
      * Atualiza os asteróides baseado na velocidade
-     ****************************************************
+     * ***************************************************
      */
     public void updateAsteroids() {
 
@@ -360,7 +367,7 @@ public class Asteroids extends Applet implements Runnable, KeyListener {
     /**
      * ********************************************************************
      * Verifica se os asteróides estão colidindo com as balas ou com a nave
-     *********************************************************************
+     * ********************************************************************
      */
     public void checkCollisions() {
 
@@ -407,7 +414,7 @@ public class Asteroids extends Applet implements Runnable, KeyListener {
     /**
      * ****************************************************
      * listener dos eventos de teclado--key listener events
-     *****************************************************
+     * ****************************************************
      */
     public void keyReleased(KeyEvent k) {
     }
@@ -476,8 +483,8 @@ public class Asteroids extends Applet implements Runnable, KeyListener {
 
     /**
      * **********************************************************
-     * calcula o movimento no eixo X baseado no ângulo da direção 
-     ***********************************************************
+     * calcula o movimento no eixo X baseado no ângulo da direção
+     * **********************************************************
      */
     public double calcAngleMoveX(double angle) {
         return (double) (Math.cos(angle * Math.PI / 180));
@@ -486,10 +493,9 @@ public class Asteroids extends Applet implements Runnable, KeyListener {
     /**
      * **********************************************************
      * calcula o movimento no eixo X baseado no ângulo da direção
-     ***********************************************************
+     * **********************************************************
      */
     public double calcAngleMoveY(double angle) {
         return (double) (Math.sin(angle * Math.PI / 180));
     }
-
 }
