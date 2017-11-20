@@ -43,6 +43,8 @@ public class SoundClip {
      * Play sound
      */
     public void play() {
+        clip.setFramePosition(0);
+        clip.loop(0);
         clip.start();
     }
 
