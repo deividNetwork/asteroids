@@ -54,11 +54,22 @@ public class Asteroids extends Applet implements Runnable, KeyListener {
 
     File background;
 
+    SoundClip themeSound;
+
+    SoundClip fireSound;
+
+    SoundClip collisionSound;
+
+    SoundClip gameOverSound;
+
     /**
      * Evento init do applet
      */
     public void init() {
         background = new File("src/image/background.jpg");
+
+        themeSound = new SoundClip(SoundClip.THEME_SONG);
+        themeSound.loop();
 
         // posiciona a nave
         ship.setX(320);
@@ -415,6 +426,14 @@ public class Asteroids extends Applet implements Runnable, KeyListener {
 
                     if (ship.getHP() <= 0) {
                         ship.setAlive(false);
+
+                        themeSound.stop();
+
+                        gameOverSound = new SoundClip(SoundClip.GAME_OVER_SONG);
+                        gameOverSound.play();
+                    } else {
+                        collisionSound = new SoundClip(SoundClip.COLLISION_SONG);
+                        collisionSound.play();
                     }
                     //continue;
                 }
@@ -483,6 +502,9 @@ public class Asteroids extends Applet implements Runnable, KeyListener {
             case KeyEvent.VK_CONTROL:
             case KeyEvent.VK_ENTER:
             case KeyEvent.VK_SPACE:
+                fireSound = new SoundClip(SoundClip.FIRE_SONG);
+                fireSound.play();
+
                 //dispara uma bala
                 currentBullet++;
                 if (currentBullet > BULLETS - 1) {
@@ -527,6 +549,8 @@ public class Asteroids extends Applet implements Runnable, KeyListener {
     }
 
     public void restartGame() {
+        themeSound.loop();
+
         ship.setHP(Ship.INITIAL_HP);
         ship.setAlive(true);
     }
