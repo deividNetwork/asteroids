@@ -1,7 +1,6 @@
 
 /**
- * @author Xavier
- * JOGO ASTEROIDS
+ * @author Xavier JOGO ASTEROIDS
  */
 import java.applet.*;
 import java.awt.*;
@@ -37,9 +36,6 @@ public class Asteroids extends Applet implements Runnable, KeyListener {
     //cria o veltor de asteróides 
     int ASTEROIDS = 20;
     Asteroid[] ast = new Asteroid[ASTEROIDS];
-
-    // Death count
-    int DEAD_QTY = 0;
 
     //cria o vetor de balas 
     int BULLETS = 100;
@@ -290,7 +286,6 @@ public class Asteroids extends Applet implements Runnable, KeyListener {
         updateBullets();
         updateAsteroids();
         checkCollisions();
-        resetRound();
     }
 
     /**
@@ -355,12 +350,14 @@ public class Asteroids extends Applet implements Runnable, KeyListener {
      * Atualiza os asteróides baseado na velocidade
      */
     public void updateAsteroids() {
+        boolean haveAsteroid = false;
 
         // movimenta e rotaciona os asteróides
         for (int n = 0; n < ASTEROIDS; n++) {
 
             // o asteróide está ativo?
             if (ast[n].isAlive()) {
+                haveAsteroid = true;
 
                 //atuliza o valor de X do asteróide
                 ast[n].incX(ast[n].getVelX());
@@ -393,21 +390,21 @@ public class Asteroids extends Applet implements Runnable, KeyListener {
                 }
             }
         }
+
+        if (!haveAsteroid) {
+            resetRound();
+        }
     }
 
     /**
      * Reset asteroids after killing all
      */
     public void resetRound() {
-        if (DEAD_QTY >= ASTEROIDS) {
-            DEAD_QTY = 0;
+        //Bonus in score
+        ship.setScore(ship.getScore() + Ship.SPECIAL_ATTACK_DAMAGE);
 
-            //Bonus in score
-            ship.setScore(ship.getScore() + Ship.SPECIAL_ATTACK_DAMAGE);
-
-            for (int n = 0; n < ASTEROIDS; n++) {
-                ast[n].setAlive(true);
-            }
+        for (int n = 0; n < ASTEROIDS; n++) {
+            ast[n].setAlive(true);
         }
     }
 
@@ -419,11 +416,14 @@ public class Asteroids extends Applet implements Runnable, KeyListener {
             return;
         }
 
+        boolean haveAsteroid = false;
+
         //percorrer o vetor de asteróides
         for (int m = 0; m < ASTEROIDS; m++) {
 
             // o asteróide está ativo?
             if (ast[m].isAlive()) {
+                haveAsteroid = true;
 
                 /*
                  * verifica a colição com a bala 
@@ -432,15 +432,12 @@ public class Asteroids extends Applet implements Runnable, KeyListener {
 
                     //o tiro está sendo usado?
                     if (bullet[n].isAlive()) {
-
                         //executa o teste de colisão perform the collision test
                         if (ast[m].getBounds().contains(
                                 bullet[n].getX(), bullet[n].getY())) {
                             bullet[n].setAlive(false);
                             ast[m].setAlive(false);
                             ship.setScore(ship.getScore() + Ship.ATTACK_DAMAGE);
-
-                            DEAD_QTY++;
 
                             continue;
                         }
@@ -467,12 +464,14 @@ public class Asteroids extends Applet implements Runnable, KeyListener {
                         gameOverSound.play();
                     } else {
                         collisionSound.play();
-
-                        DEAD_QTY++;
                     }
                     //continue;
                 }
             }
+        }
+
+        if (!haveAsteroid) {
+            resetRound();
         }
     }
 
